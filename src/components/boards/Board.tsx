@@ -252,7 +252,7 @@ function Board({
         setPendingMove(null);
       }
 
-      updateCardPerformance(setDeck, i, c.card, isRecalled ? 4 : 1);
+      updateCardPerformance(setDeck, i, c.card, isRecalled ? 3 : 1);
     } else {
       storeMakeMove({
         payload: move,

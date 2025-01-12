@@ -387,8 +387,8 @@ function LogsModal({
                   <Text tt="uppercase" fw="bold" fz="sm">
                     Rating
                   </Text>
-                  <Badge color={log.rating === 4 ? "green" : "red"}>
-                    {log.rating === 4 ? "Success" : "Fail"}
+                  <Badge color={log.rating >= 3 ? "green" : "red"}>
+                    {log.rating >= 3 ? "Success" : "Fail"}
                   </Badge>
                 </Stack>
                 <Stack>
