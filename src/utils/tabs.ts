@@ -6,6 +6,8 @@ import { z } from "zod";
 import type { StoreApi } from "zustand";
 import { getPGN, parsePGN } from "./chess";
 import type { GameHeaders } from "./treeReducer";
+import { PracticeData } from "@/state/atoms";
+import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 
 export const tabSchema = z.object({
   name: z.string(),
@@ -139,4 +141,44 @@ export async function saveToFile({
     })}\n\n`,
   );
   store.getState().save();
+}
+
+export async function saveReviewToFile({
+  tab,
+  decks,
+}: {
+  tab: Tab | undefined;
+  decks: any;
+}) {
+  if (!tab?.file) {
+    return;
+  }
+
+  const only_decks = decks.map(
+    (deck: PracticeData, setter: any) => deck
+  );
+  const output_text = JSON.stringify(only_decks);
+  const filePath = tab?.file.path + ".review";
+  writeTextFile(filePath, output_text);
+}
+
+export async function loadReviewFromFile({
+  tab,
+  decks,
+}: {
+  tab: Tab | undefined;
+  decks: any;
+}) {
+  if (!tab?.file) {
+    return;
+  }
+
+  const filePath = tab?.file.path + ".review";
+  const input_text = await readTextFile(filePath);
+  const loaded_decks = JSON.parse(input_text);
+
+  for (const [i, loaded_deck] of loaded_decks.entries()) {
+    const setter = decks[i][1];
+    setter(loaded_deck[0]);
+  }
 }

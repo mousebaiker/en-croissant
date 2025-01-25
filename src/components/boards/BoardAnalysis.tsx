@@ -5,10 +5,11 @@ import {
   currentTabAtom,
   currentTabSelectedAtom,
   enableAllAtom,
+  deckAtomFamily
 } from "@/state/atoms";
 import { keyMapAtom } from "@/state/keybinds";
 import { defaultPGN, getVariationLine } from "@/utils/chess";
-import { saveToFile } from "@/utils/tabs";
+import { loadReviewFromFile, saveReviewToFile, saveToFile } from "@/utils/tabs";
 import { Paper, Portal, Stack, Tabs } from "@mantine/core";
 import { useHotkeys, useToggle } from "@mantine/hooks";
 import {
@@ -125,6 +126,32 @@ function BoardAnalysis() {
   const practicing =
     currentTabSelected === "practice" && practiceTabSelected === "train";
 
+  const decks = [...Array(currentTab?.file?.numGames).keys()].map(
+    i =>
+      useAtom(
+        deckAtomFamily({
+          file: currentTab?.file?.path || "",
+          game: i,
+        }),
+      )
+  );
+
+  const saveReview = useCallback(
+    async () => {
+      saveReviewToFile({
+        tab: currentTab,
+        decks: decks,
+      });
+    }, [currentTab, decks]);
+
+  const loadReview = useCallback(
+    async () => {
+      loadReviewFromFile({
+        tab: currentTab,
+        decks: decks,
+      });
+    }, [currentTab, decks]);
+
   return (
     <>
       <EvalListener />
@@ -137,6 +164,8 @@ function BoardAnalysis() {
           boardRef={boardRef}
           saveFile={saveFile}
           addGame={addGame}
+          saveReview={saveReview}
+          loadReview={loadReview}
         />
       </Portal>
       <Portal target="#topRight" style={{ height: "100%" }}>

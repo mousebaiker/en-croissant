@@ -129,8 +129,8 @@ function PracticePanel() {
                       {stats.total === 0
                         ? "0%"
                         : `${Math.round(
-                            (stats.practiced / stats.total) * 100,
-                          )}%`}
+                          (stats.practiced / stats.total) * 100,
+                        )}%`}
                     </Text>
                   }
                   sections={[

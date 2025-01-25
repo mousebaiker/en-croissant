@@ -40,6 +40,8 @@ import {
 import { notifications } from "@mantine/notifications";
 import {
   IconArrowBack,
+  IconBookDownload,
+  IconBookUpload,
   IconCamera,
   IconChess,
   IconChessFilled,
@@ -99,6 +101,8 @@ interface ChessboardProps {
   movable?: "both" | "white" | "black" | "turn" | "none";
   boardRef: React.MutableRefObject<HTMLDivElement | null>;
   saveFile?: () => void;
+  saveReview?: () => void;
+  loadReview?: () => void;
   addGame?: () => void;
   canTakeBack?: boolean;
   whiteTime?: number;
@@ -115,6 +119,8 @@ function Board({
   movable = "turn",
   boardRef,
   saveFile,
+  saveReview,
+  loadReview,
   addGame,
   canTakeBack,
   whiteTime,
@@ -455,6 +461,20 @@ function Board({
             <IconSwitchVertical size="1.3rem" />
           </ActionIcon>
         </Tooltip>
+        {saveReview && (<Tooltip
+          label={"Save review"}
+        >
+          <ActionIcon variant="default" size="lg" onClick={() => saveReview()} >
+            <IconBookDownload size="1.3rem" />
+          </ActionIcon>
+        </Tooltip>)}
+        {loadReview && (<Tooltip
+          label={"Load review"}
+        >
+          <ActionIcon variant="default" size="lg" onClick={() => loadReview()} >
+            <IconBookUpload size="1.3rem" />
+          </ActionIcon>
+        </Tooltip>)}
       </ActionIcon.Group>
     ),
     [
@@ -480,12 +500,12 @@ function Board({
       : editingMode
         ? "both"
         : match(movable)
-            .with("white", () => "white" as const)
-            .with("black", () => "black" as const)
-            .with("turn", () => turn)
-            .with("both", () => "both" as const)
-            .with("none", () => undefined)
-            .exhaustive();
+          .with("white", () => "white" as const)
+          .with("black", () => "black" as const)
+          .with("turn", () => turn)
+          .with("both", () => "both" as const)
+          .with("none", () => undefined)
+          .exhaustive();
   }, [practiceLock, editingMode, movable, turn]);
 
   const theme = useMantineTheme();
@@ -611,9 +631,9 @@ function Board({
               style={
                 isBasicAnnotation(currentNode.annotations[0])
                   ? {
-                      "--light-color": lightColor,
-                      "--dark-color": darkColor,
-                    }
+                    "--light-color": lightColor,
+                    "--dark-color": darkColor,
+                  }
                   : undefined
               }
               className={chessboard}
