@@ -89,6 +89,10 @@ export async function processEntriesRecursively(
       allEntries.push(metadata);
     }
     if (entry.isDirectory) {
+      // Skip sync directory.
+      if (entry.name.includes('.stfolder')) {
+        continue;
+      }
       const dir = await join(parent, entry.name);
       const newEntries = await processEntriesRecursively(
         dir,
